@@ -1,6 +1,6 @@
 <template>
   <client-only>
-    <section class="cookieControl" v-if="cookies.text">
+    <section class="cookieControl" v-if="cookies.text" :style="variables">
       <transition :name="`cookieControl__Bar--${cookies.barPosition}`">
         <div :class="`cookieControl__Bar cookieControl__Bar--${cookies.barPosition}`" v-if="colorsSet && !cookies.consent">
           <div class="cookieControl__BarContainer">
@@ -64,7 +64,6 @@
 </template>
 
 <script>
-import cssVars from 'css-vars-ponyfill';
 export default {
   name: 'CookieControl',
   props: {
@@ -77,6 +76,7 @@ export default {
       saved: true,
       colorsSet: false,
       cookies: this.$cookies,
+      variables: {},
     }
   },
 
@@ -153,9 +153,9 @@ export default {
       let variables = {};
       for(key in this.cookies.colors){
         let k = key.toLowerCase().includes('unactive') ? key.replace(/Unactive/g, 'Inactive') : key;
-        variables[`cookie-control-${k}`] = `${this.cookies.colors[key]}`
+        variables[`--cookie-control-${k}`] = `${this.cookies.colors[key]}`
       }
-      cssVars({variables})
+      this.variables = variables
     }
     if(this.cookies.get('cookie_control_consent') && this.cookies.get('cookie_control_consent').length === 0){
       this.optionalCookies.forEach(c =>{
